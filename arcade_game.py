@@ -1,6 +1,5 @@
 import pygame
 from pygame.locals import *
-import random
 
 def arcade_ball_movement():
     global arcade_ball_speed_x, arcade_ball_speed_y, arcade_paddle_speed_x
@@ -28,6 +27,9 @@ def arcade_ball_movement():
         arcade_ball_speed_y = 0
         arcade_ball.x = arcade_paddle.x + 25
         arcade_ball.y = arcade_paddle.y - 30
+        pygame.mixer.music.load("roblox.mp3")
+        pygame.mixer.music.play()
+        pygame.mixer.music.rewind()
 
 def draw_rectangulars():
     # Drawing Rectangles
@@ -38,23 +40,43 @@ def draw_rectangulars():
         pygame.draw.rect(screen, color, pygame.Rect(x, 50, 75, 40))
         pygame.draw.rect(screen, color, pygame.Rect(x, 95, 75, 40))
         pygame.draw.rect(screen, color, pygame.Rect(x, 140, 75, 40))
+
         # colision - ball with block
         r1 = pygame.Rect(x, 5, 75, 40)
         r2 = pygame.Rect(x, 50, 75, 40)
         r3 = pygame.Rect(x, 95, 75, 40)
         r4 = pygame.Rect(x, 140, 75, 40)
+        collision_tolerance = 0
         if arcade_ball.colliderect(r4):
             if arcade_ball.top >= r4.top:
                 arcade_ball_speed_y *= -1
+                pygame.mixer.music.load("click.wav")
+                pygame.mixer.music.play()
+                pygame.mixer.music.rewind()
+            if arcade_ball.top >= r4.bottom:
+                arcade_ball_speed_y *= -1
+                pygame.mixer.music.load("click.wav")
+                pygame.mixer.music.play()
+                pygame.mixer.music.rewind()
         if arcade_ball.colliderect(r3):
             if arcade_ball.top >= r3.top:
                 arcade_ball_speed_y *= -1
+                pygame.mixer.music.load("click.wav")
+                pygame.mixer.music.play()
+                pygame.mixer.music.rewind()
         if arcade_ball.colliderect(r2):
             if arcade_ball.top >= r2.top:
                 arcade_ball_speed_y *= -1
+                pygame.mixer.music.load("click.wav")
+                pygame.mixer.music.play()
+                pygame.mixer.music.rewind()
         if arcade_ball.colliderect(r1):
             if arcade_ball.top >= r1.top:
                 arcade_ball_speed_y *= -1
+                pygame.mixer.music.load("click.wav")
+                pygame.mixer.music.play()
+                pygame.mixer.music.rewind()
+
 
         x += 80
 
@@ -121,4 +143,3 @@ while running:
     pygame.display.update()
     pygame.display.flip()
     clock.tick(60)
-      
