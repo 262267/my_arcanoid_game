@@ -2,7 +2,7 @@ import pygame
 from pygame.locals import *
 
 def arcade_ball_movement():
-    global arcade_ball_speed_x, arcade_ball_speed_y, arcade_paddle_speed_x, score_value, lifes_value
+    global arcade_ball_speed_x, arcade_ball_speed_y, arcade_paddle_speed_x, score_value, lifes_value, best_value
     arcade_ball.y -= arcade_ball_speed_y
     arcade_ball.x -= arcade_ball_speed_x
 
@@ -31,9 +31,13 @@ def arcade_ball_movement():
         pygame.mixer.music.load("roblox.mp3")
         pygame.mixer.music.play()
         pygame.mixer.music.rewind()
-        score_value = 0
         lifes_value -= 1
-
+        if lifes_value == 0:
+            pygame.mixer.music.load("end_game.wav")
+            pygame.mixer.music.play()
+            pygame.mixer.music.rewind()
+            if score_value > best_value:
+                best_value = score_value
 
 def draw_rectangulars():
     # Drawing Rectangles
@@ -50,30 +54,37 @@ def draw_rectangulars():
         r2 = pygame.Rect(x, 50, 75, 40)
         r3 = pygame.Rect(x, 95, 75, 40)
         r4 = pygame.Rect(x, 140, 75, 40)
+
+        # tutaj się pierdzieli coś
         if arcade_ball.colliderect(r4):
+            collision_tolerance = 10
             # ball collision with top rectangular size
-            if arcade_ball.top >= r4.top:
+            if abs(r4.bottom - arcade_ball.top) < collision_tolerance:
                 arcade_ball_speed_y *= -1
                 pygame.mixer.music.load("click.wav")
                 pygame.mixer.music.play()
                 pygame.mixer.music.rewind()
                 score_value += 1
-            if arcade_ball.top >= r4.left:
+            if abs(r4.left - arcade_ball.right) < collision_tolerance:
                 arcade_ball_speed_y *= -1
                 pygame.mixer.music.load("click.wav")
                 pygame.mixer.music.play()
                 pygame.mixer.music.rewind()
-            if arcade_ball.top >= r4.right:
+                score_value += 1
+            if abs(r4.right - arcade_ball.left) < collision_tolerance:
                 arcade_ball_speed_y *= -1
                 pygame.mixer.music.load("click.wav")
                 pygame.mixer.music.play()
                 pygame.mixer.music.rewind()
+                score_value += 1
+            if abs(r4.top - arcade_ball.bottom) < collision_tolerance:
+                arcade_ball_speed_y *= -1
+                pygame.mixer.music.load("click.wav")
+                pygame.mixer.music.play()
+                pygame.mixer.music.rewind()
+                score_value += 1
+
             #ball collision with bottom rectangular size
-            if arcade_ball.top >= r4.bottom:
-                arcade_ball_speed_y *= -1
-                pygame.mixer.music.load("click.wav")
-                pygame.mixer.music.play()
-                pygame.mixer.music.rewind()
         if arcade_ball.colliderect(r3):
             if arcade_ball.top >= r3.top:
                 arcade_ball_speed_y *= -1
@@ -100,38 +111,56 @@ def draw_rectangulars():
 pygame.font.init()
 score_value = 0
 fontObj = pygame.font.SysFont('calibri', 28)
-scoreX = 620
+scoreX = 640
 scoreY = 400
 
 def show_score():
-    user_score_view = fontObj.render("Total score: " + str(score_value), True, (255, 255, 255))
+    user_score_view = fontObj.render("Score: " + str(score_value), True, (255, 255, 255))
     screen.blit(user_score_view, (scoreX,scoreY))
 
 # life
 lifes_value = 3
 fontObj1 = pygame.font.SysFont('calibri', 28)
-lifeX = 620
+lifeX = 640
 lifeY = 430
 
 def show_lifes():
-    user_lifes_view = fontObj1.render("Total lifes: " + str(lifes_value), True, (255,255,255))
+    user_lifes_view = fontObj1.render("Lifes: " + str(lifes_value), True, (255,255,255))
     screen.blit(user_lifes_view, (lifeX, lifeY))
+
+# best score
+best_value = 0
+bestX = 640
+bestY = 460
+def best_score():
+    user_best_value_view = fontObj1.render("Best score: " + str(best_value), True, (255, 255, 255))
+    screen.blit(user_best_value_view, (bestX, bestY))
 
 # end of the game
 fontObj2 = pygame.font.SysFont('calibri', 36)
 endX = 170
-endY = 300
+endY = 250
+endX1 = 250
+endY1 = 290
 
 def game_over():
-    global lifes_value, user_value
+    global lifes_value, score_value
     if lifes_value == 0:
+        end_view = fontObj2.render("Game Over! Your total score: " + str(score_value),
+                                   True, (255, 255, 255))
+        end_view1 = fontObj2.render("Click SPACE try again!", True, (255, 255, 255))
+        screen.blit(end_view, (endX, endY))
+        screen.blit(end_view1, (endX1, endY1))
         if event.type == pygame.KEYUP:
-            end_view = fontObj2.render("Game Over! Click SPACE try again!", True, (255, 255, 255))
-            screen.blit(end_view, (endX, endY))
             if event.key == K_SPACE:
-                user_value = 0
+                score_value = 0
                 lifes_value = 3
-
+            else:
+                end_view = fontObj2.render("Game Over! Your total score: " + str(score_value),
+                                           True, (255, 255, 255))
+                end_view1 = fontObj2.render("Click SPACE try again!", True, (255, 255, 255))
+                screen.blit(end_view, (endX, endY))
+                screen.blit(end_view1, (endX1, endY1))
 
 # initialize the pygame
 pygame.init()
@@ -191,6 +220,7 @@ while running:
     draw_rectangulars()
     show_score()
     show_lifes()
+    best_score()
     game_over()
     arcade_paddle.x += arcade_paddle_speed_x
     pygame.draw.ellipse(screen, color2, arcade_ball)
@@ -198,4 +228,3 @@ while running:
     pygame.display.update()
     pygame.display.flip()
     clock.tick(60)
-
