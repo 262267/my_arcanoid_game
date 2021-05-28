@@ -1,5 +1,7 @@
 import pygame
 from pygame.locals import *
+import pygame_menu
+
 
 def arcade_ball_movement():
     global arcade_ball_speed_x, arcade_ball_speed_y, arcade_paddle_speed_x, score_value, lifes_value, best_value
@@ -16,7 +18,6 @@ def arcade_ball_movement():
     if arcade_ball.colliderect(arcade_paddle):
         if abs(arcade_paddle.top - arcade_ball.bottom) < collision_tolerance:
             arcade_ball_speed_y *= -1
-
 
     # bounders
     if arcade_paddle.left <= 0:
@@ -43,7 +44,7 @@ def draw_rectangulars():
     # Drawing Rectangles
     x = 0
     while x < 800:
-        global arcade_ball_speed_y, user_points, score_value
+        global arcade_ball_speed_y, score_value
         pygame.draw.rect(screen, color, pygame.Rect(x, 5, 75, 40))
         pygame.draw.rect(screen, color, pygame.Rect(x, 50, 75, 40))
         pygame.draw.rect(screen, color, pygame.Rect(x, 95, 75, 40))
@@ -55,7 +56,6 @@ def draw_rectangulars():
         r3 = pygame.Rect(x, 95, 75, 40)
         r4 = pygame.Rect(x, 140, 75, 40)
 
-        # tutaj się pierdzieli coś
         if arcade_ball.colliderect(r4):
             collision_tolerance = 10
             # ball collision with top rectangular size
@@ -84,7 +84,7 @@ def draw_rectangulars():
                 pygame.mixer.music.rewind()
                 score_value += 1
 
-            #ball collision with bottom rectangular size
+        # ball collision with bottom rectangular size
         if arcade_ball.colliderect(r3):
             if arcade_ball.top >= r3.top:
                 arcade_ball_speed_y *= -1
@@ -104,7 +104,6 @@ def draw_rectangulars():
                 pygame.mixer.music.play()
                 pygame.mixer.music.rewind()
 
-
         x += 80
 
 # score
@@ -116,7 +115,7 @@ scoreY = 400
 
 def show_score():
     user_score_view = fontObj.render("Score: " + str(score_value), True, (255, 255, 255))
-    screen.blit(user_score_view, (scoreX,scoreY))
+    screen.blit(user_score_view, (scoreX, scoreY))
 
 # life
 lifes_value = 3
@@ -140,7 +139,7 @@ def best_score():
 fontObj2 = pygame.font.SysFont('calibri', 36)
 endX = 170
 endY = 250
-endX1 = 250
+endX1 = 225
 endY1 = 290
 
 def game_over():
@@ -148,19 +147,18 @@ def game_over():
     if lifes_value == 0:
         end_view = fontObj2.render("Game Over! Your total score: " + str(score_value),
                                    True, (255, 255, 255))
-        end_view1 = fontObj2.render("Click SPACE try again!", True, (255, 255, 255))
+        end_view1 = fontObj2.render("Click SPACE and try again!", True, (255, 255, 255))
         screen.blit(end_view, (endX, endY))
         screen.blit(end_view1, (endX1, endY1))
-        if event.type == pygame.KEYUP:
-            if event.key == K_SPACE:
-                score_value = 0
-                lifes_value = 3
-            else:
-                end_view = fontObj2.render("Game Over! Your total score: " + str(score_value),
-                                           True, (255, 255, 255))
-                end_view1 = fontObj2.render("Click SPACE try again!", True, (255, 255, 255))
-                screen.blit(end_view, (endX, endY))
-                screen.blit(end_view1, (endX1, endY1))
+        for event in pygame.event.get():
+            if event.type == pygame.KEYDOWN:
+                if event.key == K_SPACE:
+                    score_value = 0
+                    lifes_value = 3
+            elif event.type == pygame.KEYUP:
+                if event.key == K_SPACE:
+                    score_value = 0
+                    lifes_value = 3
 
 # initialize the pygame
 pygame.init()
@@ -189,42 +187,67 @@ arcade_ball = pygame.Rect(380,495,30,30)
 arcade_ball_speed_x = 0
 arcade_ball_speed_y = 0
 
-# Game Loop
-running = True
-while running:
+# create a manu for our game
+mytheme = pygame_menu.themes.Theme(background_color=(0, 0, 0, 0), # transparent background
+                                   title_background_color=(0, 0, 0),
+                                   title_font_shadow=True,
+                                   widget_padding=25,
+                                   )
 
-    # background
-    screen.blit(my_image, (0, 0))
+menu = pygame_menu.Menu(600, 800, 'welcome to the arcanoid game!',
+                        theme=mytheme)
+myimage = pygame_menu.baseimage.BaseImage(
+    image_path= "C:\\Users\\kubam\\OneDrive\\Desktop\\python_game\\tło.png",
+    drawing_mode=101,
+    drawing_offset=(0,0)
+)
+mytheme.background_color = myimage
 
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            running = False
+def set_difficulty(easy, not_easy):
+    pass
 
-        # set the movement
-        if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_LEFT:
-                arcade_paddle_speed_x -= 3
-            if event.key == pygame.K_RIGHT:
-                arcade_paddle_speed_x += 3
-            if event.key == K_SPACE:
-                arcade_ball_speed_x += 5
-                arcade_ball_speed_y += 5
+def start_the_game():
+    global arcade_paddle_speed_x, arcade_ball_speed_y, arcade_ball_speed_x, score_value, best_value, lifes_value
+    # Game Loop
+    running = True
+    while running:
 
-        if event.type == pygame.KEYUP:
-            if event.key == pygame.K_LEFT:
-                arcade_paddle_speed_x += 3
-            if event.key == pygame.K_RIGHT:
-                arcade_paddle_speed_x -= 3
+        # background
+        screen.blit(my_image, (0, 0))
 
-    arcade_ball_movement()
-    draw_rectangulars()
-    show_score()
-    show_lifes()
-    best_score()
-    game_over()
-    arcade_paddle.x += arcade_paddle_speed_x
-    pygame.draw.ellipse(screen, color2, arcade_ball)
-    pygame.draw.rect(screen, color, arcade_paddle)
-    pygame.display.update()
-    pygame.display.flip()
-    clock.tick(60)
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+                
+            # set the movement
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_LEFT:
+                    arcade_paddle_speed_x -= 3
+                if event.key == pygame.K_RIGHT:
+                    arcade_paddle_speed_x += 3
+                if event.key == K_SPACE:
+                    arcade_ball_speed_x += 5
+                    arcade_ball_speed_y += 5
+            if event.type == pygame.KEYUP:
+                if event.key == pygame.K_LEFT:
+                    arcade_paddle_speed_x += 3
+                if event.key == pygame.K_RIGHT:
+                    arcade_paddle_speed_x -= 3
+
+        arcade_ball_movement()
+        draw_rectangulars()
+        show_score()
+        show_lifes()
+        best_score()
+        game_over()
+        arcade_paddle.x += arcade_paddle_speed_x
+        pygame.draw.ellipse(screen, color2, arcade_ball)
+        pygame.draw.rect(screen, color, arcade_paddle)
+        pygame.display.update()
+        pygame.display.flip()
+        clock.tick(60)
+
+menu.add.selector('Difficulty :', [('Easy', 1), ('Medium', 2), ('Hard', 3)], onchange=set_difficulty)
+menu.add.button('Play', start_the_game)
+menu.add.button('Quit', pygame_menu.events.EXIT)
+menu.mainloop(screen)
