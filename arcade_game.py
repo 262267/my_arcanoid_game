@@ -2,7 +2,7 @@ import pygame
 from pygame.locals import *
 
 def arcade_ball_movement():
-    global arcade_ball_speed_x, arcade_ball_speed_y, arcade_paddle_speed_x
+    global arcade_ball_speed_x, arcade_ball_speed_y, arcade_paddle_speed_x, score_value, lifes_value
     arcade_ball.y -= arcade_ball_speed_y
     arcade_ball.x -= arcade_ball_speed_x
 
@@ -17,6 +17,7 @@ def arcade_ball_movement():
         if abs(arcade_paddle.top - arcade_ball.bottom) < collision_tolerance:
             arcade_ball_speed_y *= -1
 
+
     # bounders
     if arcade_paddle.left <= 0:
         arcade_paddle.left = 0
@@ -30,12 +31,15 @@ def arcade_ball_movement():
         pygame.mixer.music.load("roblox.mp3")
         pygame.mixer.music.play()
         pygame.mixer.music.rewind()
+        score_value = 0
+        lifes_value -= 1
+
 
 def draw_rectangulars():
     # Drawing Rectangles
     x = 0
     while x < 800:
-        global arcade_ball_speed_y
+        global arcade_ball_speed_y, user_points, score_value
         pygame.draw.rect(screen, color, pygame.Rect(x, 5, 75, 40))
         pygame.draw.rect(screen, color, pygame.Rect(x, 50, 75, 40))
         pygame.draw.rect(screen, color, pygame.Rect(x, 95, 75, 40))
@@ -46,13 +50,25 @@ def draw_rectangulars():
         r2 = pygame.Rect(x, 50, 75, 40)
         r3 = pygame.Rect(x, 95, 75, 40)
         r4 = pygame.Rect(x, 140, 75, 40)
-        collision_tolerance = 0
         if arcade_ball.colliderect(r4):
+            # ball collision with top rectangular size
             if arcade_ball.top >= r4.top:
                 arcade_ball_speed_y *= -1
                 pygame.mixer.music.load("click.wav")
                 pygame.mixer.music.play()
                 pygame.mixer.music.rewind()
+                score_value += 1
+            if arcade_ball.top >= r4.left:
+                arcade_ball_speed_y *= -1
+                pygame.mixer.music.load("click.wav")
+                pygame.mixer.music.play()
+                pygame.mixer.music.rewind()
+            if arcade_ball.top >= r4.right:
+                arcade_ball_speed_y *= -1
+                pygame.mixer.music.load("click.wav")
+                pygame.mixer.music.play()
+                pygame.mixer.music.rewind()
+            #ball collision with bottom rectangular size
             if arcade_ball.top >= r4.bottom:
                 arcade_ball_speed_y *= -1
                 pygame.mixer.music.load("click.wav")
@@ -80,6 +96,43 @@ def draw_rectangulars():
 
         x += 80
 
+# score
+pygame.font.init()
+score_value = 0
+fontObj = pygame.font.SysFont('calibri', 28)
+scoreX = 620
+scoreY = 400
+
+def show_score():
+    user_score_view = fontObj.render("Total score: " + str(score_value), True, (255, 255, 255))
+    screen.blit(user_score_view, (scoreX,scoreY))
+
+# life
+lifes_value = 3
+fontObj1 = pygame.font.SysFont('calibri', 28)
+lifeX = 620
+lifeY = 430
+
+def show_lifes():
+    user_lifes_view = fontObj1.render("Total lifes: " + str(lifes_value), True, (255,255,255))
+    screen.blit(user_lifes_view, (lifeX, lifeY))
+
+# end of the game
+fontObj2 = pygame.font.SysFont('calibri', 36)
+endX = 170
+endY = 300
+
+def game_over():
+    global lifes_value, user_value
+    if lifes_value == 0:
+        if event.type == pygame.KEYUP:
+            end_view = fontObj2.render("Game Over! Click SPACE try again!", True, (255, 255, 255))
+            screen.blit(end_view, (endX, endY))
+            if event.key == K_SPACE:
+                user_value = 0
+                lifes_value = 3
+
+
 # initialize the pygame
 pygame.init()
 clock = pygame.time.Clock()
@@ -87,7 +140,6 @@ clock = pygame.time.Clock()
 screen_width = 800
 screen_height = 600
 screen = pygame.display.set_mode((screen_width, screen_height))
-
 #initializing color for rectangle
 color = (255,0,255)
 color2 = (255,255,255)
@@ -137,9 +189,13 @@ while running:
 
     arcade_ball_movement()
     draw_rectangulars()
+    show_score()
+    show_lifes()
+    game_over()
     arcade_paddle.x += arcade_paddle_speed_x
     pygame.draw.ellipse(screen, color2, arcade_ball)
     pygame.draw.rect(screen, color, arcade_paddle)
     pygame.display.update()
     pygame.display.flip()
     clock.tick(60)
+
