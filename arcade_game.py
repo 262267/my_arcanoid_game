@@ -1,6 +1,7 @@
 import pygame
 from pygame.locals import *
 import pygame_menu
+import random
 
 
 def arcade_ball_movement():
@@ -18,6 +19,10 @@ def arcade_ball_movement():
     if arcade_ball.colliderect(arcade_paddle):
         if abs(arcade_paddle.top - arcade_ball.bottom) < collision_tolerance:
             arcade_ball_speed_y *= -1
+        if abs(arcade_paddle.left - arcade_ball.right) < collision_tolerance:
+            arcade_ball_speed_x *= -1
+        if abs(arcade_paddle.right - arcade_ball.left) < collision_tolerance:
+            arcade_ball_speed_x *= -1
 
     # bounders
     if arcade_paddle.left <= 0:
@@ -150,15 +155,9 @@ def game_over():
         end_view1 = fontObj2.render("Click SPACE and try again!", True, (255, 255, 255))
         screen.blit(end_view, (endX, endY))
         screen.blit(end_view1, (endX1, endY1))
-        for event in pygame.event.get():
-            if event.type == pygame.KEYDOWN:
-                if event.key == K_SPACE:
-                    score_value = 0
-                    lifes_value = 3
-            elif event.type == pygame.KEYUP:
-                if event.key == K_SPACE:
-                    score_value = 0
-                    lifes_value = 3
+        score_value = 0
+        lifes_value = 3
+
 
 # initialize the pygame
 pygame.init()
@@ -187,21 +186,39 @@ arcade_ball = pygame.Rect(380,495,30,30)
 arcade_ball_speed_x = 0
 arcade_ball_speed_y = 0
 
+# adding music to menu
+begin = pygame_menu.sound.Sound()
+begin.set_sound(pygame_menu.sound.SOUND_TYPE_OPEN_MENU,
+                "C:\\Users\\kubam\\OneDrive\\Desktop\\python_game\\menu_music.mp3"
+                )
+begin.set_sound(pygame_menu.sound.SOUND_TYPE_WIDGET_SELECTION, "click.wav")
+
 # create a manu for our game
-mytheme = pygame_menu.themes.Theme(background_color=(0, 0, 0, 0), # transparent background
-                                   title_background_color=(0, 0, 0),
+font = pygame_menu.font.FONT_8BIT
+font1= pygame_menu.font.FONT_FRANCHISE
+mytheme = pygame_menu.themes.Theme(widget_font=font1,
+                                   title_font=font1,
+                                   background_color=(255, 255, 255, 0), # transparent background
+                                   title_background_color=(0, 0, 0,0),
                                    title_font_shadow=True,
                                    widget_padding=25,
+                                   readonly_color=(255,255,255),
+                                   title_font_size=60,
+                                   widget_font_color = (255,255,255),
+                                   widget_font_size=36
                                    )
 
-menu = pygame_menu.Menu(600, 800, 'welcome to the arcanoid game!',
+menu = pygame_menu.Menu(title='welcome to the arcanoid game!',
+                        width=600,
+                        height=500,
                         theme=mytheme)
+menu.set_sound(begin, recursive=True)
 myimage = pygame_menu.baseimage.BaseImage(
     image_path= "C:\\Users\\kubam\\OneDrive\\Desktop\\python_game\\tło.png",
-    drawing_mode=101,
-    drawing_offset=(0,0)
 )
-mytheme.background_color = myimage
+
+def main_background():
+    myimage.draw(screen)
 
 def set_difficulty(easy, not_easy):
     pass
@@ -226,8 +243,14 @@ def start_the_game():
                 if event.key == pygame.K_RIGHT:
                     arcade_paddle_speed_x += 3
                 if event.key == K_SPACE:
-                    arcade_ball_speed_x += 5
-                    arcade_ball_speed_y += 5
+                    p = 0.5
+                    if random.random() < p:
+                        arcade_ball_speed_x += 5
+                        arcade_ball_speed_y += 5
+                    else:
+                        arcade_ball_speed_x -= 5
+                        arcade_ball_speed_y += 5
+
             if event.type == pygame.KEYUP:
                 if event.key == pygame.K_LEFT:
                     arcade_paddle_speed_x += 3
@@ -250,4 +273,9 @@ def start_the_game():
 menu.add.selector('Difficulty :', [('Easy', 1), ('Medium', 2), ('Hard', 3)], onchange=set_difficulty)
 menu.add.button('Play', start_the_game)
 menu.add.button('Quit', pygame_menu.events.EXIT)
-menu.mainloop(screen)
+menu.mainloop(screen, main_background)
+
+
+
+
+
