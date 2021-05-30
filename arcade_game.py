@@ -264,24 +264,25 @@ author = pygame_menu.Menu(height=600,
                           )
 
 author.add.vertical_margin(1)
-author.add.label('Introducing:',
+author.add.label('Introduction:',
                  align=pygame_menu.locals.ALIGN_LEFT,
                  font_name=pygame_menu.font.FONT_OPEN_SANS_BOLD,
+                 font_size=44
                  )
 
 info = ('Witam wszystkich czytających tę wiadomość! Znajdujemy się w grze, '
         'stworzonej przeze mnie, czyli Jakuba Muzykę. Została ona stworzona na '
-        'potrzebę zaliczenia przedmiotu o nazwie "Programowanie". Po wszelkie, '
+        'potrzebę zaliczenia przedmiotu o nazwie "Programowanie". Po wszelkie '
         'wskazówki, dotyczące sterowania oraz resztę rzeczy, zapraszam do sekcji'
-        '"Instruction",gdzie dokładnie omówię zasady. Mam nadzieje, że spędzicie miło czas,'
+        '"Instruction", gdzie dokładnie omówię zasady. Mam nadzieje, że spędzicie miło czas,'
         ' grając w moją grę, pozdrawiam! :)')
 
 author_info = author.add.label(info,
-                               max_char=40,
-                               align=pygame_menu.locals.ALIGN_LEFT,
+                               max_char=50,
+                               align=pygame_menu.locals.ALIGN_CENTER,
                                margin=(29, 1),
-                               font_size=26,
-                               font_name=pygame_menu.font.FONT_PT_SERIF,
+                               font_size=28,
+                               font_name=pygame_menu.font.FONT_OPEN_SANS_BOLD,
                                font_color=(255, 255, 255),
                                padding=0
                                )
@@ -289,11 +290,10 @@ author_info = author.add.label(info,
 image_path = pygame_menu.baseimage.BaseImage(
     image_path= "C:\\Users\\kubam\\OneDrive\\Pictures\\Camera Roll\\ja1.png"
 )
-author.add.image(image_path,
-                 align=pygame_menu.locals.ALIGN_RIGHT,
+author.add_image(image_path,
+                 align=pygame_menu.locals.ALIGN_CENTER,
                  border_inflate=(383,250)
                  )
-
 
 for line in author_info:
     line.set_max_width(400)
@@ -315,6 +315,31 @@ instruction = pygame_menu.Menu(height=600,
                         theme=instruction_button,
                         title='Instruction'
                         )
+
+instruction.add.vertical_margin(1)
+instruction.add.label('How to play?',
+                 align=pygame_menu.locals.ALIGN_LEFT,
+                 font_name=pygame_menu.font.FONT_OPEN_SANS_BOLD,
+                 font_size=44
+                 )
+how_to_play = ('Gra polega na zbijaniu bloczków, które znikają i dają po 1 punkcie. Masz 3 życia. Nie da się '
+               'wygrać - walczysz z samym sobą o najlepszy rezultat. Poruszasz się strzałkami (LEFT, RIGHT),'
+               ' a piłkę wyrzucasz spacją (SPACE). Po dotarciu do górnej części ekranu te wracają'
+               ' do postaci początkowej, wtedy prędkość piłki się zwiększa, a długość naszej paletki do odbijania się'
+               'zmniejsza. Przegrywasz, gdy stracisz wszystkie życia. Są 3 poziomy trudności do wyboru: easy,'
+               'medium, hard. W każadym z tych poziomów prędkość piłeczki oraz naszej paletki '
+               'zwiększa się/zmniejsza się.\n'
+               'Powodzenia!')
+
+instruction_info = instruction.add.label(how_to_play,
+                               max_char=45,
+                               align=pygame_menu.locals.ALIGN_CENTER,
+                               margin=(29, 1),
+                               font_size=24,
+                               font_name=pygame_menu.font.FONT_OPEN_SANS_BOLD,
+                               font_color=(255, 255, 255),
+                               padding=0
+                               )
 
 def set_difficulty(easy, not_easy):
     pass
