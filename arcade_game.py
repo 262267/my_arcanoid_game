@@ -199,26 +199,122 @@ font1= pygame_menu.font.FONT_FRANCHISE
 mytheme = pygame_menu.themes.Theme(widget_font=font1,
                                    title_font=font1,
                                    background_color=(255, 255, 255, 0), # transparent background
-                                   title_background_color=(0, 0, 0,0),
+                                   title_background_color=(0, 0, 0, 0),
                                    title_font_shadow=True,
                                    widget_padding=25,
                                    readonly_color=(255,255,255),
                                    title_font_size=60,
                                    widget_font_color = (255,255,255),
-                                   widget_font_size=36
+                                   widget_font_size=24
                                    )
 
 menu = pygame_menu.Menu(title='welcome to the arcanoid game!',
                         width=600,
-                        height=500,
+                        height=550,
                         theme=mytheme)
 menu.set_sound(begin, recursive=True)
 myimage = pygame_menu.baseimage.BaseImage(
-    image_path= "C:\\Users\\kubam\\OneDrive\\Desktop\\python_game\\tło.png",
+    image_path= "C:\\Users\\kubam\\OneDrive\\Desktop\\python_game\\tło.png"
 )
 
 def main_background():
     myimage.draw(screen)
+
+# create a settings
+settings_menu = pygame_menu.themes.Theme(
+                            widget_font=font1,
+                            background_color=(255, 255, 255, 0),
+                            widget_padding=25,
+                            readonly_color=(255,255,255),
+                            widget_font_color = (255,255,255),
+                            widget_font_size=24,
+                            title_bar_style=pygame_menu.widgets.MENUBAR_STYLE_TITLE_ONLY_DIAGONAL,
+                            title_background_color=(0,0,0)
+                            )
+
+settings = pygame_menu.Menu(height=600,
+                            width=800,
+                            theme=settings_menu,
+                            title='Settings'
+                            )
+def add_settings():
+    settings.add.vertical_margin(50)
+    settings.add.button(
+        'Return to main menu',
+        pygame_menu.events.BACK,
+        align=pygame_menu.locals.ALIGN_CENTER,
+    )
+
+# create a Author button
+author_button = pygame_menu.themes.Theme(
+                            widget_font=font1,
+                            background_color=(255, 255, 255, 0),
+                            widget_padding=25,
+                            readonly_color=(255,255,255),
+                            widget_font_color = (255,255,255,0),
+                            widget_font_size=34,
+                            title_bar_style=pygame_menu.widgets.MENUBAR_STYLE_TITLE_ONLY_DIAGONAL,
+                            title_background_color=(0,0,0)
+                            )
+
+author = pygame_menu.Menu(height=600,
+                          width=800,
+                          theme=author_button,
+                          title='Author',
+                          )
+
+author.add.vertical_margin(1)
+author.add.label('Introducing:',
+                 align=pygame_menu.locals.ALIGN_LEFT,
+                 font_name=pygame_menu.font.FONT_OPEN_SANS_BOLD,
+                 )
+
+info = ('Witam wszystkich czytających tę wiadomość! Znajdujemy się w grze, '
+        'stworzonej przeze mnie, czyli Jakuba Muzykę. Została ona stworzona na '
+        'potrzebę zaliczenia przedmiotu o nazwie "Programowanie". Po wszelkie, '
+        'wskazówki, dotyczące sterowania oraz resztę rzeczy, zapraszam do sekcji'
+        '"Instruction",gdzie dokładnie omówię zasady. Mam nadzieje, że spędzicie miło czas,'
+        ' grając w moją grę, pozdrawiam! :)')
+
+author_info = author.add.label(info,
+                               max_char=40,
+                               align=pygame_menu.locals.ALIGN_LEFT,
+                               margin=(29, 1),
+                               font_size=26,
+                               font_name=pygame_menu.font.FONT_PT_SERIF,
+                               font_color=(255, 255, 255),
+                               padding=0
+                               )
+
+image_path = pygame_menu.baseimage.BaseImage(
+    image_path= "C:\\Users\\kubam\\OneDrive\\Pictures\\Camera Roll\\ja1.png"
+)
+author.add.image(image_path,
+                 align=pygame_menu.locals.ALIGN_RIGHT,
+                 border_inflate=(383,250)
+                 )
+
+
+for line in author_info:
+    line.set_max_width(400)
+
+# create instruction button
+instruction_button = pygame_menu.themes.Theme(
+                            widget_font=font1,
+                            background_color=(0, 0, 0, 0),
+                            widget_padding=25,
+                            readonly_color=(255,255,255),
+                            widget_font_color = (255,255,255),
+                            widget_font_size=24,
+                            title_bar_style=pygame_menu.widgets.MENUBAR_STYLE_TITLE_ONLY_DIAGONAL,
+                            title_background_color=(0,0,0)
+                            )
+
+instruction = pygame_menu.Menu(height=600,
+                        width=800,
+                        theme=instruction_button,
+                        title='Instruction'
+                        )
 
 def set_difficulty(easy, not_easy):
     pass
@@ -272,10 +368,8 @@ def start_the_game():
 
 menu.add.selector('Difficulty :', [('Easy', 1), ('Medium', 2), ('Hard', 3)], onchange=set_difficulty)
 menu.add.button('Play', start_the_game)
+menu.add.button('Instruction', instruction)
+menu.add.button('Author', author)
+menu.add.button('Settings', settings)
 menu.add.button('Quit', pygame_menu.events.EXIT)
 menu.mainloop(screen, main_background)
-
-
-
-
-
