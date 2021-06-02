@@ -4,6 +4,7 @@ import pygame_menu
 import random
 
 
+
 def arcade_ball_movement():
     global arcade_ball_speed_x, arcade_ball_speed_y, arcade_paddle_speed_x, score_value, lifes_value, best_value
     arcade_ball.y -= arcade_ball_speed_y
@@ -188,9 +189,9 @@ arcade_ball_speed_y = 0
 
 # adding music to menu
 begin = pygame_menu.sound.Sound()
-begin.set_sound(pygame_menu.sound.SOUND_TYPE_OPEN_MENU,
-                "C:\\Users\\kubam\\OneDrive\\Desktop\\python_game\\menu_music.mp3"
-                )
+# begin.set_sound(pygame_menu.sound.SOUND_TYPE_EVENT, "menu_music.wav")
+pygame.mixer.music.load("menu_music.wav")
+pygame.mixer.music.play(-1)
 begin.set_sound(pygame_menu.sound.SOUND_TYPE_WIDGET_SELECTION, "click.wav")
 
 # create a manu for our game
@@ -212,6 +213,7 @@ menu = pygame_menu.Menu(title='welcome to the arcanoid game!',
                         width=600,
                         height=550,
                         theme=mytheme)
+
 menu.set_sound(begin, recursive=True)
 myimage = pygame_menu.baseimage.BaseImage(
     image_path= "C:\\Users\\kubam\\OneDrive\\Desktop\\python_game\\tło.png"
@@ -221,6 +223,16 @@ def main_background():
     myimage.draw(screen)
 
 # create a settings
+# def sound_settings(value, enabled):
+#     if enabled:
+#         menu.set_sound(begin, recursive=True)
+#         print("Menu sounds were enabled")
+#     else:
+#         menu.set_sound(None, recursive=True)
+#         print("Menu sounds were disabled")
+#
+# def sound_effects_settings():
+#     pass
 settings_menu = pygame_menu.themes.Theme(
                             widget_font=font1,
                             background_color=(255, 255, 255, 0),
@@ -237,6 +249,14 @@ settings = pygame_menu.Menu(height=600,
                             theme=settings_menu,
                             title='Settings'
                             )
+settings.add.toggle_switch(title='Sound:',
+                           default=True,
+                           # onchange=sound_settings
+                           )
+settings.add.toggle_switch('Sound effects:',
+                           True,
+                           # onchange=sound_effects_settings
+                           )
 def add_settings():
     settings.add.vertical_margin(50)
     settings.add.button(
@@ -341,11 +361,15 @@ instruction_info = instruction.add.label(how_to_play,
                                padding=0
                                )
 
-def set_difficulty(easy, not_easy):
-    pass
+DIFFICULTY = ['EASY']
+def set_difficulty(value, difficulty):
+    selected,index = value
+    DIFFICULTY[0] = difficulty
 
-def start_the_game():
-    global arcade_paddle_speed_x, arcade_ball_speed_y, arcade_ball_speed_x, score_value, best_value, lifes_value
+
+def start_the_game(difficulty):
+    global arcade_paddle_speed_x, arcade_ball_speed_y, arcade_ball_speed_x, score_value, best_value,\
+        lifes_value, arcade_paddle
     # Game Loop
     running = True
     while running:
@@ -358,6 +382,15 @@ def start_the_game():
                 running = False
                 
             # set the movement
+
+            difficulty = difficulty[0]
+            if difficulty == 'EASY':
+                arcade_paddle = pygame.Rect(355, 530, 130, 10)
+            elif difficulty == 'MEDIUM':
+                arcade_paddle = pygame.Rect(355, 530, 100, 10)
+            elif difficulty == 'HARD':
+                arcade_paddle = pygame.Rect(355, 530, 80, 10)
+
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_LEFT:
                     arcade_paddle_speed_x -= 3
@@ -391,8 +424,12 @@ def start_the_game():
         pygame.display.flip()
         clock.tick(60)
 
-menu.add.selector('Difficulty :', [('Easy', 1), ('Medium', 2), ('Hard', 3)], onchange=set_difficulty)
-menu.add.button('Play', start_the_game)
+menu.add.selector('Difficulty :', [('Easy', 'EASY'),
+                                  ('Medium', 'MEDIUM'),
+                                  ('Hard', 'HARD')],
+                  onchange=set_difficulty
+                  )
+menu.add.button('Play', start_the_game, DIFFICULTY)
 menu.add.button('Instruction', instruction)
 menu.add.button('Author', author)
 menu.add.button('Settings', settings)
