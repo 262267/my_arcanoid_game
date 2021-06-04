@@ -4,7 +4,8 @@ import pygame_menu
 import random
 from pygame_menu import sound
 
-
+tab = [[], [],
+       [], []]
 
 def arcade_ball_movement():
     global arcade_ball_speed_x, arcade_ball_speed_y, arcade_paddle_speed_x, score_value, lifes_value, best_value
@@ -51,77 +52,41 @@ def arcade_ball_movement():
                 best_value = score_value
 
 def draw_rectangulars():
+    global arcade_ball_speed_y, score_value, arcade_ball_speed_x
     # Drawing Rectangles
-    x = 0
-    while x < 800:
-        global arcade_ball_speed_y, score_value
-        pygame.draw.rect(screen, color, pygame.Rect(x, 5, 75, 40))
-        pygame.draw.rect(screen, color, pygame.Rect(x, 50, 75, 40))
-        pygame.draw.rect(screen, color, pygame.Rect(x, 95, 75, 40))
-        pygame.draw.rect(screen, color, pygame.Rect(x, 140, 75, 40))
+    # x = 0
+    for i in range(len(tab)):
+        for j in range(len(tab[i])):
+            pygame.draw.rect(screen, color, tab[i][j])
 
-        # colision - ball with block
-        r1 = pygame.Rect(x, 5, 75, 40)
-        r2 = pygame.Rect(x, 50, 75, 40)
-        r3 = pygame.Rect(x, 95, 75, 40)
-        r4 = pygame.Rect(x, 140, 75, 40)
+    hit = False
+    element = tab[0][0]
+    k = 0
+    for i in range(len(tab)):
+        for j in range(len(tab[i])):
+            block = tab[i][j]
+            if arcade_ball.colliderect(block):
+                if block.collidepoint((arcade_ball.x, arcade_ball.y + 15)) or block.collidepoint((arcade_ball.x, arcade_ball.y - 15)):
+                    arcade_ball_speed_y *= -1
 
-        if arcade_ball.colliderect(r4):
-            collision_tolerance = 10
-            # ball collision with top rectangular size
-            if abs(r4.bottom - arcade_ball.top) < collision_tolerance:
-                arcade_ball_speed_y *= -1
+                elif block.collidepoint((arcade_ball.x - 15, arcade_ball.y)) or block.collidepoint((arcade_ball.x + 15, arcade_ball.y)):
+                    arcade_ball_speed_x *= -1
+                else:
+                    arcade_ball_speed_y *= -1
+                    arcade_ball_speed_x *= -1
+
                 pygame.mixer.music.load("C:\\Users\\kubam\\OneDrive\\Desktop\\game\\my_python_game\\"
                                         "graphics_and_sounds\\click.wav")
                 pygame.mixer.music.play()
                 pygame.mixer.music.rewind()
                 score_value += 1
-            if abs(r4.left - arcade_ball.right) < collision_tolerance:
-                arcade_ball_speed_y *= -1
-                pygame.mixer.music.load("C:\\Users\\kubam\\OneDrive\\Desktop\\game\\my_python_game\\"
-                                        "graphics_and_sounds\\click.wav")
-                pygame.mixer.music.play()
-                pygame.mixer.music.rewind()
-                score_value += 1
-            if abs(r4.right - arcade_ball.left) < collision_tolerance:
-                arcade_ball_speed_y *= -1
-                pygame.mixer.music.load("C:\\Users\\kubam\\OneDrive\\Desktop\\game\\my_python_game\\"
-                                        "graphics_and_sounds\\click.wav")
-                pygame.mixer.music.play()
-                pygame.mixer.music.rewind()
-                score_value += 1
-            if abs(r4.top - arcade_ball.bottom) < collision_tolerance:
-                arcade_ball_speed_y *= -1
-                pygame.mixer.music.load("C:\\Users\\kubam\\OneDrive\\Desktop\\game\\my_python_game\\"
-                                        "graphics_and_sounds\\click.wav")
-                pygame.mixer.music.play()
-                pygame.mixer.music.rewind()
-                score_value += 1
+                element = block
+                hit = True
+                k = i
+                break
 
-        # ball collision with bottom rectangular size
-        if arcade_ball.colliderect(r3):
-            if arcade_ball.top >= r3.top:
-                arcade_ball_speed_y *= -1
-                pygame.mixer.music.load("C:\\Users\\kubam\\OneDrive\\Desktop\\game\\my_python_game\\"
-                                        "graphics_and_sounds\\click.wav")
-                pygame.mixer.music.play()
-                pygame.mixer.music.rewind()
-        if arcade_ball.colliderect(r2):
-            if arcade_ball.top >= r2.top:
-                arcade_ball_speed_y *= -1
-                pygame.mixer.music.load("C:\\Users\\kubam\\OneDrive\\Desktop\\game\\my_python_game\\"
-                                        "graphics_and_sounds\\click.wav")
-                pygame.mixer.music.play()
-                pygame.mixer.music.rewind()
-        if arcade_ball.colliderect(r1):
-            if arcade_ball.top >= r1.top:
-                arcade_ball_speed_y *= -1
-                pygame.mixer.music.load("C:\\Users\\kubam\\OneDrive\\Desktop\\game\\my_python_game\\"
-                                        "graphics_and_sounds\\click.wav")
-                pygame.mixer.music.play()
-                pygame.mixer.music.rewind()
-
-        x += 80
+    if hit:
+        tab[k].remove(element)
 
 # score
 pygame.font.init()
@@ -381,6 +346,16 @@ def set_difficulty(value, difficulty):
 def start_the_game(difficulty):
     global arcade_paddle_speed_x, arcade_ball_speed_y, arcade_ball_speed_x, score_value, best_value,\
         lifes_value, arcade_paddle
+
+    space_click = False
+    yy = 5
+    for i in range(len(tab)):
+        xx = 0
+        for j in range(10):
+            tab[i].append(pygame.Rect(xx, yy, 75, 40))
+            xx += 80
+        yy += 45
+        
     # Game Loop
     running = True
     while running:
@@ -409,13 +384,14 @@ def start_the_game(difficulty):
                     arcade_paddle_speed_x += 3
                 if event.key == K_SPACE:
                     p = 0.5
-                    if random.random() < p:
-                        arcade_ball_speed_x += 5
-                        arcade_ball_speed_y += 5
-                    else:
-                        arcade_ball_speed_x -= 5
-                        arcade_ball_speed_y += 5
-
+                    if space_click == False:
+                        if random.random() < p:
+                            arcade_ball_speed_x += 5
+                            arcade_ball_speed_y += 5
+                        else:
+                            arcade_ball_speed_x -= 5
+                            arcade_ball_speed_y += 5
+                    space_click = True
 
             if event.type == pygame.KEYUP:
                 if event.key == pygame.K_LEFT:
