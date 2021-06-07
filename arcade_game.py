@@ -7,8 +7,10 @@ from pygame_menu import sound
 tab = [[], [],
        [], []]
 
+
 def arcade_ball_movement():
-    global arcade_ball_speed_x, arcade_ball_speed_y, arcade_paddle_speed_x, score_value, lifes_value, best_value
+    global arcade_ball_speed_x, arcade_ball_speed_y, arcade_paddle_speed_x, \
+        score_value, lifes_value, best_value
 
     arcade_ball.y -= arcade_ball_speed_y
     arcade_ball.x -= arcade_ball_speed_x
@@ -38,26 +40,39 @@ def arcade_ball_movement():
         arcade_ball_speed_y = 0
         arcade_ball.x = arcade_paddle.x + 25
         arcade_ball.y = arcade_paddle.y - 30
-        pygame.mixer.music.load("C:\\Users\\kubam\\OneDrive\\Desktop\\game\\my_python_game\\"
-                                "graphics_and_sounds\\roblox.mp3")
+        pygame.mixer.music.load("graphics_and_sounds\\roblox.mp3")
         pygame.mixer.music.play()
         pygame.mixer.music.rewind()
         lifes_value -= 1
         if lifes_value == 0:
-            pygame.mixer.music.load("C:\\Users\\kubam\\OneDrive\\Desktop\\game\\my_python_game\\"
-                                    "graphics_and_sounds\\end_game.wav")
+            pygame.mixer.music.load("graphics_and_sounds\\end_game.wav")
             pygame.mixer.music.play()
             pygame.mixer.music.rewind()
             if score_value > best_value:
                 best_value = score_value
+            # score_value = 0
+
 
 def draw_rectangulars():
-    global arcade_ball_speed_y, score_value, arcade_ball_speed_x
+    global arcade_ball_speed_y, score_value, arcade_ball_speed_x, best_value
     # Drawing Rectangles
-    # x = 0
+
     for i in range(len(tab)):
         for j in range(len(tab[i])):
             pygame.draw.rect(screen, color, tab[i][j])
+
+
+    end = True
+    for x in tab:
+        if len(x) != 0:
+            end = False
+            break
+    if end:
+        arcade_ball.x = 380
+        arcade_ball.y = 495
+        start_the_game(DIFFICULTY)
+        if score_value > best_value:
+            best_value = score_value
 
     hit = False
     element = tab[0][0]
@@ -66,17 +81,19 @@ def draw_rectangulars():
         for j in range(len(tab[i])):
             block = tab[i][j]
             if arcade_ball.colliderect(block):
-                if block.collidepoint((arcade_ball.x, arcade_ball.y + 15)) or block.collidepoint((arcade_ball.x, arcade_ball.y - 15)):
+                if block.collidepoint((arcade_ball.x, arcade_ball.y + 15)) or block.collidepoint(
+                        (arcade_ball.x, arcade_ball.y - 15)):
                     arcade_ball_speed_y *= -1
 
-                elif block.collidepoint((arcade_ball.x - 15, arcade_ball.y)) or block.collidepoint((arcade_ball.x + 15, arcade_ball.y)):
+                elif block.collidepoint((arcade_ball.x - 15, arcade_ball.y)) or block.collidepoint(
+                        (arcade_ball.x + 15, arcade_ball.y)):
                     arcade_ball_speed_x *= -1
                 else:
                     arcade_ball_speed_y *= -1
                     arcade_ball_speed_x *= -1
 
-                pygame.mixer.music.load("C:\\Users\\kubam\\OneDrive\\Desktop\\game\\my_python_game\\"
-                                        "graphics_and_sounds\\click.wav")
+
+                pygame.mixer.music.load("graphics_and_sounds\\click.wav")
                 pygame.mixer.music.play()
                 pygame.mixer.music.rewind()
                 score_value += 1
@@ -95,10 +112,12 @@ fontObj = pygame.font.SysFont('calibri', 28)
 scoreX = 640
 scoreY = 400
 
+
 def show_score():
     user_score_view = fontObj.render("Score: " + str(score_value),
                                      True, (255, 255, 255))
     screen.blit(user_score_view, (scoreX, scoreY))
+
 
 # life
 lifes_value = 3
@@ -106,18 +125,23 @@ fontObj1 = pygame.font.SysFont('calibri', 28)
 lifeX = 640
 lifeY = 430
 
+
 def show_lifes():
     user_lifes_view = fontObj1.render("Lifes: " + str(lifes_value),
-                                      True, (255,255,255))
+                                      True, (255, 255, 255))
     screen.blit(user_lifes_view, (lifeX, lifeY))
+
 
 # best score
 best_value = 0
 bestX = 640
 bestY = 460
+
+
 def best_score():
     user_best_value_view = fontObj1.render("Best score: " + str(best_value), True, (255, 255, 255))
     screen.blit(user_best_value_view, (bestX, bestY))
+
 
 # end of the game
 fontObj2 = pygame.font.SysFont('calibri', 36)
@@ -126,70 +150,54 @@ endY = 250
 endX1 = 225
 endY1 = 290
 
-def game_over():
-    global lifes_value, score_value
-    if lifes_value == 0:
-        end_view = fontObj2.render("Game Over! Your total score: " + str(score_value),
-                                   True, (255, 255, 255))
-        end_view1 = fontObj2.render("Click SPACE and try again!",
-                                   True, (255, 255, 255))
-        screen.blit(end_view, (endX, endY))
-        screen.blit(end_view1, (endX1, endY1))
-        score_value = 0
-        lifes_value = 3
-
-
 # initialize the pygame
 pygame.init()
 clock = pygame.time.Clock()
-#create the screen
+# create the screen
 screen_width = 800
 screen_height = 600
 screen = pygame.display.set_mode((screen_width, screen_height))
-#initializing color for rectangle
-color = (255,0,255)
-color2 = (255,255,255)
-color1 = (255,0,0)
+# initializing color for rectangle
+color = (255, 0, 255)
+color2 = (255, 255, 255)
+color1 = (255, 0, 0)
 
 # Title and Icon
-my_image = pygame.image.load('C:\\Users\\kubam\\OneDrive\\Desktop\\game\\my_python_game\\'
-                             'graphics_and_sounds\\tło.png')
+my_image = pygame.image.load("graphics_and_sounds\\tło.png")
 pygame.display.set_caption("arcade game created by Jakub Muzyka")
-icon = pygame.image.load('C:\\Users\\kubam\\OneDrive\\Desktop\\game\\my_python_game\\'
-                         'graphics_and_sounds\\arcanoid.png')
+icon = pygame.image.load("graphics_and_sounds\\arcanoid.png")
 pygame.display.set_icon(icon)
 
-#arcanoid
-arcade_paddle = pygame.Rect(355,530, 80, 10)
+# arcanoid
+arcade_paddle = pygame.Rect(355, 530, 80, 10)
 arcade_paddle_speed_x = 0
 
 # ball
-arcade_ball = pygame.Rect(380,495,30,30)
+arcade_ball = pygame.Rect(380, 495, 30, 30)
 arcade_ball_speed_x = 0
 arcade_ball_speed_y = 0
 
 # adding music to menu
 begin = sound.Sound()
-pygame.mixer.music.load("C:\\Users\\kubam\\OneDrive\\Desktop\\game\\my_python_game\\"
-                         "graphics_and_sounds\\menu_music.wav")
+pygame.mixer.music.load("graphics_and_sounds\\menu_music.wav")
 pygame.mixer.music.play(-1)
-begin.set_sound(pygame_menu.sound.SOUND_TYPE_WIDGET_SELECTION, "C:\\Users\\kubam\\OneDrive\\Desktop\\game\\"
-                                                               "my_python_game\\graphics_and_sounds\\click.wav")
+begin.set_sound(pygame_menu.sound.SOUND_TYPE_WIDGET_SELECTION, "graphics_and_sounds\\click.wav")
 # Disable a sound
 begin.set_sound(pygame_menu.sound.SOUND_TYPE_ERROR, None)
 
+
 # create a manu for our game
 font = pygame_menu.font.FONT_8BIT
-font1= pygame_menu.font.FONT_FRANCHISE
+font1 = pygame_menu.font.FONT_FRANCHISE
 mytheme = pygame_menu.themes.Theme(widget_font=font1,
                                    title_font=font1,
-                                   background_color=(255, 255, 255, 0), # transparent background
+                                   background_color=(255, 255, 255, 0),  # transparent background
                                    title_background_color=(0, 0, 0, 0),
                                    title_font_shadow=True,
                                    widget_padding=25,
-                                   readonly_color=(255,255,255),
+                                   readonly_color=(255, 255, 255),
                                    title_font_size=60,
-                                   widget_font_color = (255,255,255),
+                                   widget_font_color=(255, 255, 255),
                                    widget_font_size=24
                                    )
 
@@ -199,12 +207,12 @@ menu = pygame_menu.Menu(title='welcome to the arcanoid game!',
                         theme=mytheme)
 
 menu.set_sound(begin, recursive=True)
-myimage = pygame_menu.baseimage.BaseImage(
-    image_path= "C:\\Users\\kubam\\OneDrive\\Desktop\\game\\my_python_game\\graphics_and_sounds\\tło.png"
-)
+myimage = pygame_menu.baseimage.BaseImage(image_path="graphics_and_sounds\\tło.png")
+
 
 def main_background():
     myimage.draw(screen)
+
 
 # create a settings
 def sound_settings(value, sound_set):
@@ -213,20 +221,22 @@ def sound_settings(value, sound_set):
     else:
         pygame.mixer.music.pause()
 
+
 def sound_effects_settings(value1, sound_effect_set):
     if sound_effect_set:
         menu.set_sound(begin, recursive=True)
     else:
         menu.set_sound(None, recursive=True)
 
+
 settings_menu = pygame_menu.themes.Theme(widget_font=font1,
                                          background_color=(255, 255, 255, 0),
                                          widget_padding=25,
-                                         readonly_color=(255,255,255),
-                                         widget_font_color = (255,255,255),
+                                         readonly_color=(255, 255, 255),
+                                         widget_font_color=(255, 255, 255),
                                          widget_font_size=24,
                                          title_bar_style=pygame_menu.widgets.MENUBAR_STYLE_TITLE_ONLY_DIAGONAL,
-                                         title_background_color=(0,0,0)
+                                         title_background_color=(0, 0, 0)
                                          )
 
 settings = pygame_menu.Menu(height=600,
@@ -234,6 +244,7 @@ settings = pygame_menu.Menu(height=600,
                             theme=settings_menu,
                             title='Settings'
                             )
+
 
 def add_settings():
     settings.add.vertical_margin(50)
@@ -243,15 +254,16 @@ def add_settings():
         align=pygame_menu.locals.ALIGN_CENTER,
     )
 
+
 # create a Author button
 author_button = pygame_menu.themes.Theme(widget_font=font1,
                                          background_color=(255, 255, 255, 0),
                                          widget_padding=25,
-                                         readonly_color=(255,255,255),
-                                         widget_font_color = (255,255,255,0),
+                                         readonly_color=(255, 255, 255),
+                                         widget_font_color=(255, 255, 255, 0),
                                          widget_font_size=34,
                                          title_bar_style=pygame_menu.widgets.MENUBAR_STYLE_TITLE_ONLY_DIAGONAL,
-                                         title_background_color=(0,0,0)
+                                         title_background_color=(0, 0, 0)
                                          )
 
 author = pygame_menu.Menu(height=600,
@@ -284,13 +296,13 @@ author_info = author.add.label(title=info,
                                padding=0
                                )
 
-image_path = pygame_menu.baseimage.BaseImage(
-    image_path= "C:\\Users\\kubam\\OneDrive\\Pictures\\Camera Roll\\ja1.png"
-)
-author.add_image(image_path,
-                 align=pygame_menu.locals.ALIGN_CENTER,
-                 border_inflate=(383,250)
-                 )
+# image_path = pygame_menu.baseimage.BaseImage(
+#     image_path="graphics_and_sounds\\ja1.png"
+# )
+# author.add_image(image_path,
+#                  align=pygame_menu.locals.ALIGN_CENTER,
+#                  border_inflate=(383, 250)
+#                  )
 
 for line in author_info:
     line.set_max_width(400)
@@ -299,11 +311,11 @@ for line in author_info:
 instruction_button = pygame_menu.themes.Theme(widget_font=font1,
                                               background_color=(0, 0, 0, 0),
                                               widget_padding=25,
-                                              readonly_color=(255,255,255),
-                                              widget_font_color = (255,255,255),
+                                              readonly_color=(255, 255, 255),
+                                              widget_font_color=(255, 255, 255),
                                               widget_font_size=24,
                                               title_bar_style=pygame_menu.widgets.MENUBAR_STYLE_TITLE_ONLY_DIAGONAL,
-                                              title_background_color=(0,0,0)
+                                              title_background_color=(0, 0, 0)
                                               )
 
 instruction = pygame_menu.Menu(height=600,
@@ -337,36 +349,80 @@ instruction_info = instruction.add.label(title=how_to_play,
                                          padding=0
                                          )
 
+# levels
 DIFFICULTY = ['EASY']
+
 def set_difficulty(value, difficulty):
-    selected,index = value
+    selected, index = value
     DIFFICULTY[0] = difficulty
 
 
+# texts after loose
+def game_over_message(msg, colorful):
+    end_view = fontObj2.render(msg, True, colorful)
+    screen.blit(end_view, (220, 200))
+
+
+def game_over_message1(msg, colorful):
+    end_view1 = fontObj2.render(msg, True, colorful)
+    screen.blit(end_view1, (220, 300))
+
+def game_over_message2(msg, colorful):
+    end_view1 = fontObj2.render(msg, True, colorful)
+    screen.blit(end_view1, (250, 400))
+
+def game_over_screen():
+
+    game_over_message("Game Over! Your score: " + str(score_value), color2)
+    game_over_message1("Press q to return to menu", color2)
+    game_over_message2("Press p to play again", color2)
+    pygame.display.update()
+
 def start_the_game(difficulty):
-    global arcade_paddle_speed_x, arcade_ball_speed_y, arcade_ball_speed_x, score_value, best_value,\
+    global arcade_paddle_speed_x, arcade_ball_speed_y, arcade_ball_speed_x, score_value, best_value, \
         lifes_value, arcade_paddle
 
-    space_click = False
+    # space_click = False
+
+    arcade_paddle = pygame.Rect(355, 530, 130, 10)
+    arcade_paddle_speed_x = 0
+    arcade_ball.x = 380
+    arcade_ball.y = 495
+    arcade_ball_speed_x = 0
+    arcade_ball_speed_y = 0
+
     yy = 5
     for i in range(len(tab)):
+        tab[i] = []
         xx = 0
         for j in range(10):
             tab[i].append(pygame.Rect(xx, yy, 75, 40))
             xx += 80
         yy += 45
-        
+
+
     # Game Loop
     running = True
+    game_over = False
     while running:
 
         # background
         screen.blit(my_image, (0, 0))
+        while game_over == True:
+            game_over_screen()
+            lifes_value = 3
+            score_value = 0
+            for event in pygame.event.get():
+                if event.type == pygame.KEYUP:
+                    if event.key == pygame.K_p:
+                        start_the_game(difficulty)
+                    if event.key == pygame.K_q:
+                        menu.mainloop(screen, main_background)
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
-                
+
             # set the movement
 
             difficulty = difficulty[0]
@@ -382,16 +438,19 @@ def start_the_game(difficulty):
                     arcade_paddle_speed_x -= 3
                 if event.key == pygame.K_RIGHT:
                     arcade_paddle_speed_x += 3
+
                 if event.key == K_SPACE:
                     p = 0.5
-                    if space_click == False:
-                        if random.random() < p:
-                            arcade_ball_speed_x += 5
-                            arcade_ball_speed_y += 5
-                        else:
-                            arcade_ball_speed_x -= 5
-                            arcade_ball_speed_y += 5
-                    space_click = True
+                    # if space_click == False:
+                    if random.random() < p:
+                        arcade_ball_speed_x += 5
+                        arcade_ball_speed_y += 5
+
+                    else:
+                        arcade_ball_speed_x -= 5
+                        arcade_ball_speed_y += 5
+                    # space_click = True
+
 
             if event.type == pygame.KEYUP:
                 if event.key == pygame.K_LEFT:
@@ -399,12 +458,20 @@ def start_the_game(difficulty):
                 if event.key == pygame.K_RIGHT:
                     arcade_paddle_speed_x -= 3
 
-        arcade_ball_movement()
+        if lifes_value == 0:
+            game_over = True
+            for event in pygame.event.get():
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_p:
+                        game_over = False
+                    elif event.key == pygame.K_q:
+                        game_over = False
+
         draw_rectangulars()
         show_score()
         show_lifes()
         best_score()
-        game_over()
+        arcade_ball_movement()
         arcade_paddle.x += arcade_paddle_speed_x
         pygame.draw.ellipse(screen, color2, arcade_ball)
         pygame.draw.rect(screen, color, arcade_paddle)
@@ -412,18 +479,20 @@ def start_the_game(difficulty):
         pygame.display.flip()
         clock.tick(60)
 
+
 menu.add.selector(title='Difficulty :',
-                  items=[('Easy', 'EASY'),('Medium', 'MEDIUM'), ('Hard', 'HARD')],
+                  items=[('Easy', 'EASY'), ('Medium', 'MEDIUM'), ('Hard', 'HARD')],
                   onchange=set_difficulty
                   )
 settings.add.selector(title="Sound :",
-                      items=[('ON', True),('OFF', False)],
+                      items=[('ON', True), ('OFF', False)],
                       onchange=sound_settings
                       )
 settings.add.selector(title="Sound efects : ",
-                      items=[('ON', True),('OFF', False)],
+                      items=[('ON', True), ('OFF', False)],
                       onchange=sound_effects_settings
                       )
+
 menu.add.button('Play', start_the_game, DIFFICULTY)
 menu.add.button('Instruction', instruction)
 menu.add.button('Author', author)
