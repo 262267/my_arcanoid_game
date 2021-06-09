@@ -4,11 +4,13 @@ import pygame_menu
 import random
 from pygame_menu import sound
 
+# rows of blocks
 tab = [[], [],
        [], []]
 
 
 def arcade_ball_movement():
+    """A function which defines the behavior of the ball when you touch the edge of the screen"""
     global arcade_ball_speed_x, arcade_ball_speed_y
 
     arcade_ball.y -= arcade_ball_speed_y
@@ -25,6 +27,7 @@ def arcade_ball_movement():
 
 
 def ball_collision_with_paddle():
+    """Ball behavior after collision with paddle"""
     global arcade_ball_speed_x, arcade_ball_speed_y
     collision_tolerance = 10
     if arcade_ball.colliderect(arcade_paddle):
@@ -37,6 +40,7 @@ def ball_collision_with_paddle():
 
 
 def bounders():
+    """Paddle behavior after touch the right and left edge and ball behavior after touch bottom edge"""
     global arcade_ball_speed_x, arcade_ball_speed_y, life_value, best_value, space_click
 
     # bounders
@@ -64,6 +68,7 @@ def bounders():
 
 
 def draw_rectangles():
+    """Function which draw blocks and their bahovior after defeat or win"""
     global arcade_ball_speed_y, score_value, arcade_ball_speed_x, best_value,\
         win, space_click, arcade_paddle_speed_x
 
@@ -117,6 +122,7 @@ def draw_rectangles():
     if hit:
         tab[k].remove(element)
 
+
 # score
 pygame.font.init()
 score_value = 0
@@ -126,6 +132,7 @@ scoreY = 400
 
 
 def show_score():
+    """Showing user score"""
     user_score_view = fontObj.render('Score: ' + str(score_value),
                                      True, (255, 255, 255))
     screen.blit(user_score_view, (scoreX, scoreY))
@@ -139,6 +146,7 @@ lifeY = 430
 
 
 def show_life():
+    """Showing user life"""
     user_life_view = fontObj1.render('Life: ' + str(life_value),
                                       True, (255, 255, 255))
     screen.blit(user_life_view, (lifeX, lifeY))
@@ -151,6 +159,7 @@ bestY = 460
 
 
 def best_score():
+    """Showing user best score"""
     user_best_value_view = fontObj1.render('Best score: ' + str(best_value), True, (255, 255, 255))
     screen.blit(user_best_value_view, (bestX, bestY))
 
@@ -220,18 +229,21 @@ mytheme = pygame_menu.themes.Theme(widget_font=font1,
 menu = pygame_menu.Menu(title='welcome to the arcanoid game!',
                         width=600,
                         height=550,
-                        theme=mytheme)
+                        theme=mytheme
+                        )
 
 menu.set_sound(begin, recursive=True)
 myimage = pygame_menu.baseimage.BaseImage(image_path='graphics_and_sounds\\tło.png')
 
 
 def main_background():
+    """draw background when the menu is opened"""
     myimage.draw(screen)
 
 
 # create a settings
 def sound_settings(value, sound_set):
+    """Set music when the menu is opened"""
     if sound_set:
         pygame.mixer.music.unpause()
     else:
@@ -239,6 +251,7 @@ def sound_settings(value, sound_set):
 
 
 def sound_effects_settings(value1, sound_effect_set):
+    """Set music effects when the menu is opened"""
     if sound_effect_set:
         menu.set_sound(begin, recursive=True)
     else:
@@ -261,7 +274,9 @@ settings = pygame_menu.Menu(height=600,
                             title='Settings'
                             )
 
+
 def add_settings():
+    """Add button in upper right corner which allows you to return to the menu"""
     settings.add.vertical_margin(50)
     settings.add.button(
         'Return to main menu',
@@ -361,27 +376,32 @@ DIFFICULTY = ['EASY']
 
 
 def set_difficulty(value, difficulty):
+    """the ability to choose the level of difficulty"""
     selected, index = value
     DIFFICULTY[0] = difficulty
 
 
 # texts after loose
 def game_over_message(msg, colorful):
+    """Message after defeat"""
     end_view = fontObj2.render(msg, True, colorful)
     screen.blit(end_view, (220, 200))
 
 
 def game_over_message1(msg, colorful):
+    """Message after defeat"""
     end_view1 = fontObj2.render(msg, True, colorful)
     screen.blit(end_view1, (220, 300))
 
 
 def game_over_message2(msg, colorful):
+    """Message after defeat"""
     end_view1 = fontObj2.render(msg, True, colorful)
     screen.blit(end_view1, (250, 400))
 
 
 def game_over_screen():
+    """Display messages after defeat"""
     game_over_message("Game Over! Your score: " + str(score_value), color2)
     game_over_message1("Press q to return to menu", color2)
     game_over_message2("Press p to play again", color2)
@@ -389,6 +409,7 @@ def game_over_screen():
 
 
 def change_paddle_color(value1, colorp):
+    """the ability to change the color of paddle"""
     global arcade_paddle_color
     colorc, _ = value1
     if colorp == (-1, -1, -1):
@@ -399,6 +420,7 @@ def change_paddle_color(value1, colorp):
 
 
 def change_ball_color(value2, colorb):
+    """the ability to change the color of ball"""
     global arcade_ball_color
     colorx, _ = value2
     if colorb == (-1, -1, -1):
@@ -409,6 +431,7 @@ def change_ball_color(value2, colorb):
 
 
 def change_blocks_color(value3, colorbl):
+    """the ability to change the color of blocks"""
     global arcade_blocks_color
     colord, _ = value3
     if colorbl == (-1, -1, -1):
@@ -423,6 +446,7 @@ space_click = False
 
 
 def start_the_game(difficulty):
+    """Main function witch start all the functions after click "Play" button"""
     global arcade_paddle_speed_x, arcade_ball_speed_y, arcade_ball_speed_x, score_value, best_value, \
         life_value, arcade_paddle, win, space_click
 
@@ -432,6 +456,7 @@ def start_the_game(difficulty):
     arcade_ball.y = 495
     arcade_ball_speed_x = 0
     arcade_ball_speed_y = 0
+
     if not win:
         score_value = 0
 
@@ -443,7 +468,6 @@ def start_the_game(difficulty):
             tab[i].append(pygame.Rect(xx, yy, 75, 40))
             xx += 80
         yy += 45
-
 
     # Game Loop
     running = True
