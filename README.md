@@ -1,5 +1,5 @@
 ## Arkanoid game
-
+![Algorithm schema](./graphics_and_sounds/menu1.png)
 ## Table of contents
 * [General info](#general-info)
 * [Technologies](#technologies)
