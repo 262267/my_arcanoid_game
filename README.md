@@ -1,7 +1,10 @@
+## Arkanoid game
+
 ## Table of contents
 * [General info](#general-info)
 * [Technologies](#technologies)
 * [Instruction](#instruction)
+* [How to run this game](#how-to-run-this-game)
 * [Author](#author)
 
 ## General info
@@ -19,6 +22,13 @@ To play this game you have to click "Play" button in game menu. Then just click 
 * you can choose the level (the more difficult it is, the smaller the paddle)
 * it is possible to change the colors of paddle, ball and blocks 
 * if you want, you can switch on/off the sound and sound effect in menu 
+
+## How to run this game
+1. Clone the template project, replacing my-project with the name of the project you are creating: 
+`https://github.com/262267/my_python_game.git my-project`
+`cd my-project `
+2. Install the project's development and runtime requirements:
+`pip install -r requirements.txt`
 
 ## Author 
 Game was created by Jakub Muzyka - applied mathematics student. 
