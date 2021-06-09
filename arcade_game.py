@@ -299,13 +299,13 @@ info = ('Witam wszystkich czytających tę wiadomość! Znajdujemy się w grze, 
         'potrzebę zaliczenia przedmiotu o nazwie "Programowanie". Po wszelkie '
         'wskazówki, dotyczące sterowania oraz resztę rzeczy, zapraszam do sekcji'
         '"Instruction", gdzie dokładnie omówię zasady. Mam nadzieje, że spędzicie miło czas,'
-        ' grając w moją grę, pozdrawiam! :)')
+        ' grając w moją grę,\npozdrawiam! :)')
 
 author_info = author.add.label(title=info,
                                max_char=50,
                                align=pygame_menu.locals.ALIGN_CENTER,
                                margin=(29, 1),
-                               font_size=28,
+                               font_size=24,
                                font_name=pygame_menu.font.FONT_OPEN_SANS_BOLD,
                                font_color=(255, 255, 255),
                                padding=0
@@ -341,12 +341,10 @@ instruction.add.label(title='How to play?',
 
 how_to_play = ('Gra polega na zbijaniu bloczków, które znikają i dają po 1 punkcie. Masz 3 życia. Nie da się '
                'wygrać - walczysz z samym sobą o najlepszy rezultat. Poruszasz się strzałkami (LEFT, RIGHT),'
-               ' a piłkę wyrzucasz spacją (SPACE). Po dotarciu do górnej części ekranu te wracają'
-               ' do postaci początkowej, wtedy prędkość piłki się zwiększa, a długość naszej paletki do odbijania się'
-               'zmniejsza. Przegrywasz, gdy stracisz wszystkie życia. Są 3 poziomy trudności do wyboru: easy,'
-               'medium, hard. W każadym z tych poziomów prędkość piłeczki oraz naszej paletki '
-               'zwiększa się/zmniejsza się.\n'
-               'Powodzenia!')
+               ' a piłkę wyrzucasz spacją (SPACE). Po zbiciu wszystkich bloczków te wracają'
+               ' do postaci początkowej. Przegrywasz, gdy stracisz wszystkie życia.'
+               ' Są 3 poziomy trudności do wyboru: easy, medium, hard. W każdym z tych poziomów'
+               ' długość naszej paletki zwiększa się/zmniejsza się.\nPowodzenia!')
 
 instruction_info = instruction.add.label(title=how_to_play,
                                          max_char=45,
